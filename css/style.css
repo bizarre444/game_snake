@@ -25,8 +25,8 @@
 }
 
 td.game_table_cell {
-    width: 15px;
-    height: 15px;
+    width: 30px;
+    height: 30px;
     border: 1px dotted #eee;
     border-collapse: collapse;
 }

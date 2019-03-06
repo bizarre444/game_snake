@@ -5,10 +5,13 @@ function random(min, max) {
 var game = {
     size: 20,
     snake: [], 
-    food: {},
-    direction: {
-        row: -1,
-        col:0
+    food: [],
+    direction: null,
+    directions: {
+        up: {row: -1, col: 0},
+        down: {row: 1, col: 0},
+        left: {row: 0, col: -1},
+        right: {row: 0, col: 1}
     },
     createBoard: function() {
         console.log('create Board');
@@ -65,8 +68,8 @@ var game = {
     createFood: function() {
         console.log('create Food');
         var pool = [];
-        for (var i = 0; i < this.size; i ++) {
-            for (var j = 0; j < this.size; j ++) {
+        for (var i = 1; i < this.size; i ++) {
+            for (var j = 1; j < this.size; j ++) {
                 if (!this.isSnakeCell(i,j)){
                     pool.push({row: i, col: j});
                 }
@@ -75,6 +78,9 @@ var game = {
 
         var index = random(0, pool.length);
         this.food = pool[index];
+
+        console.log(this.food);
+
     },
     setEvents: function() {
         this.intervalId = setInterval(this.move.bind(this), 500);
@@ -83,28 +89,16 @@ var game = {
     changeDirection: function(e) {
         switch (e.keyCode) {
             case 37:
-                this.direction = {
-                    row: 0,
-                    col: -1
-                };
+                this.direction = this.directions.left;
                 break;
             case 38:
-                this.direction = {
-                    row: -1,
-                    col: 0
-                };
+                this.direction = this.directions.up;
                 break;
             case 39:
-                this.direction = {
-                    row: 0,
-                    col: 1
-                };
+                this.direction = this.directions.right;
                 break;
             case 40:
-                this.direction = {
-                    row: 1,
-                    col: 0
-                };
+                this.direction = this.directions.down;
                 break;
             default:
                 break;
@@ -112,7 +106,7 @@ var game = {
     },
     checkCell: function(row, col) {
         if (row < 0 || row >= this.size || col < 0|| col >= this.size) {
-            return false;
+            //return false;
         }
 
         if (this.isSnakeCell(row, col)) {
@@ -140,6 +134,21 @@ var game = {
             this.createFood(); //еды нет, создаем новую
         }
 
+
+        for (var i = 0; i < this.snake.length; i++) {
+        if(row < 0 || row > 19 || col < 0 || col > 19) {
+            if (row < 0) {
+                this.snake[i].row = 19;
+            } if (row > 19) {
+                this.snake[i].row = 0;
+            } if (col < 0) {
+                this.snake[i].col = 19;
+            } if (col > 19) {
+                this.snake[i].col = 0;
+                }
+            }
+        }
+
         this.render();
 
     },
@@ -153,6 +162,13 @@ var game = {
     }
 };
 
-window.addEventListener('load', function() {
+// window.addEventListener('load', function() {
+//     game.run();
+// });
+
+var button = document.getElementById('start');
+
+button.addEventListener('click', function() {
     game.run();
+    button.style.display = 'none';
 });
